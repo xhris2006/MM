@@ -13,7 +13,7 @@ function getAdminClient() {
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabase()
@@ -22,7 +22,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
 
-    const userId = params.id
+    const { id: userId } = await params
     if (userId === user.id) {
       return NextResponse.json({ error: 'Impossible de supprimer votre propre compte.' }, { status: 400 })
     }
@@ -52,7 +52,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabase()
@@ -61,7 +61,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
 
-    const userId = params.id
+    const { id: userId } = await params
     const { action, voteId, newCandidateId, candidateId } = await req.json()
     const adminClient = getAdminClient()
 
