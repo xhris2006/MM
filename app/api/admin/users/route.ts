@@ -28,7 +28,7 @@ export async function GET() {
     if (authErr) throw authErr
 
     // Récupérer tous les votes avec les infos candidats
-    const { data: votes, error: votesErr } = await supabase
+    const { data: votes, error: votesErr } = await adminClient
       .from('votes')
       .select(`
         id,
