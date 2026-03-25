@@ -12,20 +12,20 @@ function getAdminClient() {
   )
 }
 
-// ✅ DELETE
+// ✅ DELETE corrigé
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Changement ici : Promise
 ) {
   try {
+    const { id: userId } = await params; // On attend la résolution des params
+    
     const supabase = await createServerSupabase()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user || !isAdmin(user.email)) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
-
-    const userId = params.id
 
     if (userId === user.id) {
       return NextResponse.json(
@@ -65,12 +65,14 @@ export async function DELETE(
   }
 }
 
-// ✅ PATCH
+// ✅ PATCH corrigé
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Changement ici : Promise
 ) {
   try {
+    const { id: userId } = await params; // On attend la résolution des params
+    
     const supabase = await createServerSupabase()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -78,7 +80,6 @@ export async function PATCH(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
 
-    const userId = params.id
     const { action, voteId, newCandidateId, candidateId } = await req.json()
 
     if (action === 'delete_vote') {
