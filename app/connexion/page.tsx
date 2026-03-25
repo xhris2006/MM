@@ -1,10 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
-export default function ConnexionPage() {
+function ConnexionContent() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -107,5 +107,13 @@ export default function ConnexionPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function ConnexionPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConnexionContent />
+    </Suspense>
   )
 }

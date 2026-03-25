@@ -34,14 +34,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   paddingBottom: '1px',
                   transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => {
-                  (e.target as HTMLAnchorElement).style.color = '#E8C97A'
-                  ;(e.target as HTMLAnchorElement).style.borderBottomColor = '#E8C97A'
-                }}
-                onMouseLeave={e => {
-                  (e.target as HTMLAnchorElement).style.color = '#C9A84C'
-                  ;(e.target as HTMLAnchorElement).style.borderBottomColor = 'rgba(201,168,76,0.4)'
-                }}
               >
                 Xhris Dior
               </a>
