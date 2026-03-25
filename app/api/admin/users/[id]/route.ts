@@ -2,19 +2,24 @@ import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/config'
 
-// ✅ MISE À JOUR (PUT)
+// ✅ Interface pour typer les arguments de la route
+type RouteContext = {
+  params: Promise<{ id: string }>
+}
+
+// ✅ MÉTHODE PUT (Mise à jour)
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } // Correction : Passage en Promise
+  context: RouteContext
 ) {
   try {
-    // On attend la résolution de l'ID avant de l'utiliser
-    const { id } = await params;
+    // Extraction asynchrone de l'ID (Obligatoire en Next.js 15)
+    const { id } = await context.params
 
     const supabase = await createServerSupabase()
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Vérification de l'admin
+    // Vérification admin
     if (!user || !isAdmin(user.email)) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
@@ -46,13 +51,13 @@ export async function PUT(
   }
 }
 
-// ✅ SUPPRESSION (DELETE)
+// ✅ MÉTHODE DELETE (Suppression)
 export async function DELETE(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> } // Correction : Passage en Promise
+  context: RouteContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params
 
     const supabase = await createServerSupabase()
     const { data: { user } } = await supabase.auth.getUser()
@@ -61,7 +66,6 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
     }
 
-    // Suppression du candidat
     const { error } = await supabase
       .from('candidates')
       .delete()
