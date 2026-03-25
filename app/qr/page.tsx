@@ -2,18 +2,24 @@
 import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase'
-import type { Candidate } from '@/lib/types'
+import type { Candidate, Category } from '@/lib/types'
+
+type QRCandidate = Pick<Candidate, 'id' | 'name' | 'slug'> & { category: Category }
 
 export default function QRPage() {
-  const [candidates, setCandidates] = useState<Candidate[]>([])
+  const [candidates, setCandidates] = useState<QRCandidate[]>([])
   const [selected, setSelected] = useState<'site' | string>('site')
   const [qrDataUrl, setQrDataUrl] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || typeof window !== 'undefined' ? window.location.origin : ''
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '')
   const supabase = createClient()
 
   useEffect(() => {
-    supabase.from('candidates').select('id, name, slug, category').order('name').then(({ data }) => setCandidates(data || []))
+    supabase
+      .from('candidates')
+      .select('id, name, slug, category')
+      .order('name')
+      .then(({ data }) => setCandidates((data || []) as QRCandidate[]))
   }, [])
 
   useEffect(() => {

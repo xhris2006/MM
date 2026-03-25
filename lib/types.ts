@@ -3,6 +3,7 @@ export type Category = 'miss' | 'master'
 export interface Candidate {
   id: string
   name: string
+  slug?: string | null
   description: string
   photo_url: string | null
   category: Category
